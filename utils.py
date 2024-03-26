@@ -36,7 +36,7 @@ def bleu_score(tgt_text, pred_text, max_n, func_bleu: nltk.translate.bleu_score)
     scores = []
     for j in range(1, max_n + 1):
         weights = [1 / j] * j
-        scores.append(func_bleu(tgt_text, pred_text, weights))
+        scores.append(func_bleu(tgt_text, pred_text, tuple(weights)))
     return scores
 
 def sent_scores(tgt_text, pred_text, max_n=4):

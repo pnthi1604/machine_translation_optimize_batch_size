@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from .beam_search import beam_search
-from .utils import sent_scores, corpus_scores, create_src_mask
+from .utils import sent_scores, corpus_scores
 
 def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size):
     device = config["device"]
@@ -14,7 +14,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
     batch_iterator = tqdm(validation_dataloader, desc=f"Validation Bleu Epoch {epoch:02d}")
     for batch in batch_iterator:
         src = batch['encoder_input'].to(device) # (b, seq_len)
-        src_mask = create_src_mask(src, tokenizer_src.token_to_id("[PAD]"), device) # (B, 1, 1, seq_len)
+        src_mask = batch['encoder_mask'].to(device) # (B, 1, 1, seq_len)
         src_text = batch['src_text'][0]
         tgt_text = batch['tgt_text'][0]
 
@@ -38,6 +38,8 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             print(f"{f'SOURCE: ':>12}{src_text}")
             print(f"{f'TARGET: ':>12}{tgt_text}")
             print(f"{f'PREDICTED: ':>12}{pred_text}")
+            print(f"{f'TOKENS TARGET: ':>12}{[tokenizer_tgt.encode(tgt_text).tokens]}")
+            print(f"{f'TOKENS PREDICTED: ':>12}{tokenizer_tgt.encode(pred_text).tokens}")
             scores = sent_scores(tgt_text=[tokenizer_tgt.encode(tgt_text).tokens],
                                     pred_text=tokenizer_tgt.encode(pred_text).tokens)
             print(f'BLEU OF SENTENCE {count}')
