@@ -80,7 +80,7 @@ def filter_data(item, tokenizer_src, tokenizer_tgt, config):
   len_list_tgt_token = len(tokenizer_tgt.encode(tgt_sent).ids)
   max_len_list = max(len_list_src_token, len_list_tgt_token)
   min_len_list = min(len_list_src_token, len_list_tgt_token)
-  return max_len_list <= config["max_len"] - 4 and min_len_list > 0
+  return max_len_list <= config["max_len"] - 4 and min_len_list > 4
 
 def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
     src_batch, tgt_batch, label_batch, src_text_batch, tgt_text_batch = [], [], [], [], []
@@ -151,43 +151,37 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
     train_dataset = BilingualDataset(
         ds=dataset["train"],
         src_lang=config["lang_src"],
-        tgt_lang=config["lang_tgt"]
+        tgt_lang=config["lang_tgt"],
     )
 
     validation_dataset = BilingualDataset(
         ds=dataset["validation"],
         src_lang=config["lang_src"],
-        tgt_lang=config["lang_tgt"]
+        tgt_lang=config["lang_tgt"],
     )
 
     bleu_validation_dataset = BilingualDataset(
         ds=dataset["bleu_validation"],
         src_lang=config["lang_src"],
-        tgt_lang=config["lang_tgt"]
+        tgt_lang=config["lang_tgt"],
     )
 
-    pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
+    bleu_train_dataset = BilingualDataset(
+        ds=dataset["bleu_train"],
+        src_lang=config["lang_src"],
+        tgt_lang=config["lang_tgt"],
+    )
+
     train_dataloader = DataLoader(train_dataset,
                                   batch_size=config['batch_size_train'],
-                                  shuffle=True, 
-                                  collate_fn=lambda batch: collate_fn(batch=batch,
-                                                                      pad_id_token=pad_id_token,
-                                                                      tokenizer_src=tokenizer_src,
-                                                                      tokenizer_tgt=tokenizer_tgt))
-    validation_dataloader = DataLoader(validation_dataset, batch_size=config["batch_size_validation"],
-                                       shuffle=False,
-                                       collate_fn=lambda batch: collate_fn(batch=batch,
-                                                                           pad_id_token=pad_id_token,
-                                                                           tokenizer_src=tokenizer_src,
-                                                                           tokenizer_tgt=tokenizer_tgt))
-    bleu_validation_dataloader = DataLoader(bleu_validation_dataset, batch_size=1,
-                                            shuffle=False,
-                                            collate_fn=lambda batch: collate_fn(batch=batch,
-                                                                                pad_id_token=pad_id_token,
-                                                                                tokenizer_src=tokenizer_src,
-                                                                                tokenizer_tgt=tokenizer_tgt))
+                                  shuffle=True)
+    validation_dataloader = DataLoader(validation_dataset,
+                                       batch_size=config["batch_size_validation"],
+                                       shuffle=False)
+    bleu_validation_dataloader = DataLoader(bleu_validation_dataset, batch_size=1, shuffle=False)
+    bleu_train_dataloader = DataLoader(bleu_train_dataset, batch_size=1, shuffle=False)
 
-    return train_dataloader, validation_dataloader, bleu_validation_dataloader
+    return train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader
 
 def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
     map_data_path = config["map_data_path"]                                                    

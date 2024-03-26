@@ -71,9 +71,9 @@ def train_model(config):
 
     # get dataloader
     train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader = get_dataloader(config=config,
-                                                                                         dataset=dataset,
-                                                                                         tokenizer_src=tokenizer_src,
-                                                                                         tokenizer_tgt=tokenizer_tgt,
+                                                                                                                dataset=dataset,
+                                                                                                                tokenizer_src=tokenizer_src,
+                                                                                                                tokenizer_tgt=tokenizer_tgt,
     )
 
     config["len_train_dataloader"] = len(train_dataloader)

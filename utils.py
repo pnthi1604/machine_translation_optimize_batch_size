@@ -9,7 +9,7 @@ from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
 
 def get_all_sentences(dataset, lang):
     for item in dataset:
-        yield item["translation"][lang]
+        yield item[lang]
 
 def get_or_build_tokenizer(config, dataset, lang):
     tokenizer_path = Path(config['tokenizer_file'].format(lang))
