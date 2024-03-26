@@ -64,6 +64,13 @@ def load_data(config):
     dataset = load_from_disk(data_path)
     print("\nĐã load dataset thành công!\n")
 
+    map_data_path = config["map_data_path"]                                                    
+    if not os.path.exists(map_data_path):
+        dataset = dataset.map(
+            lambda item: preprocess_function(config=config, example=item),
+            remove_columns=dataset["train"].column_names,
+        )
+
     return dataset
 
 def filter_data(item, tokenizer_src, tokenizer_tgt, config):
@@ -131,10 +138,6 @@ def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
 def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
     map_data_path = config["map_data_path"]                                                    
     if not os.path.exists(map_data_path):
-        dataset = dataset.map(
-            lambda item: preprocess_function(config=config, example=item),
-            remove_columns=dataset["train"].column_names,
-        )
         dataset = dataset.filter(lambda item: filter_data(item=item,
                                                           tokenizer_src=tokenizer_src,
                                                           tokenizer_tgt=tokenizer_tgt,
@@ -189,10 +192,6 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
 def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
     map_data_path = config["map_data_path"]                                                    
     if not os.path.exists(map_data_path):
-        dataset = dataset.map(
-            lambda item: preprocess_function(config=config, example=item),
-            remove_columns=dataset["train"].column_names,
-        )
         dataset = dataset.filter(lambda item: filter_data(item=item,
                                                           tokenizer_src=tokenizer_src,
                                                           tokenizer_tgt=tokenizer_tgt,
