@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from .beam_search import beam_search
-from .utils import sent_scores, corpus_scores
+from .utils import sent_scores, corpus_scores, create_src_mask
 
 def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size):
     device = config["device"]
@@ -14,7 +14,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
     batch_iterator = tqdm(validation_dataloader, desc=f"Validation Bleu Epoch {epoch:02d}")
     for batch in batch_iterator:
         src = batch['encoder_input'].to(device) # (b, seq_len)
-        src_mask = batch['encoder_mask'].to(device) # (B, 1, 1, seq_len)
+        src_mask = create_src_mask(src, tokenizer_src.token_to_id("[PAD]"), device) # (B, 1, 1, seq_len)
         src_text = batch['src_text'][0]
         tgt_text = batch['tgt_text'][0]
 
@@ -45,7 +45,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             print(f'BLEU OF SENTENCE {count}')
             for i in range(0, len(scores)):
                 print(f'BLEU_{i + 1}: {scores[i]}')
-
+                
     scores_corpus = corpus_scores(tgt_texts=expected,
                                     pred_texts=predicted)
     
