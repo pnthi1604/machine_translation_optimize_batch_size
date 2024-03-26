@@ -172,14 +172,32 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
         tgt_lang=config["lang_tgt"],
     )
 
+    pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
     train_dataloader = DataLoader(train_dataset,
                                   batch_size=config['batch_size_train'],
-                                  shuffle=True)
-    validation_dataloader = DataLoader(validation_dataset,
-                                       batch_size=config["batch_size_validation"],
-                                       shuffle=False)
-    bleu_validation_dataloader = DataLoader(bleu_validation_dataset, batch_size=1, shuffle=False)
-    bleu_train_dataloader = DataLoader(bleu_train_dataset, batch_size=1, shuffle=False)
+                                  shuffle=True, 
+                                  collate_fn=lambda batch: collate_fn(batch=batch,
+                                                                      pad_id_token=pad_id_token,
+                                                                      tokenizer_src=tokenizer_src,
+                                                                      tokenizer_tgt=tokenizer_tgt))
+    validation_dataloader = DataLoader(validation_dataset, batch_size=config["batch_size_validation"],
+                                       shuffle=False,
+                                       collate_fn=lambda batch: collate_fn(batch=batch,
+                                                                           pad_id_token=pad_id_token,
+                                                                           tokenizer_src=tokenizer_src,
+                                                                           tokenizer_tgt=tokenizer_tgt))
+    bleu_validation_dataloader = DataLoader(bleu_validation_dataset, batch_size=1,
+                                            shuffle=False,
+                                            collate_fn=lambda batch: collate_fn(batch=batch,
+                                                                                pad_id_token=pad_id_token,
+                                                                                tokenizer_src=tokenizer_src,
+                                                                                tokenizer_tgt=tokenizer_tgt))
+    bleu_train_dataloader = DataLoader(bleu_train_dataset, batch_size=1,
+                                            shuffle=False,
+                                            collate_fn=lambda batch: collate_fn(batch=batch,
+                                                                                pad_id_token=pad_id_token,
+                                                                                tokenizer_src=tokenizer_src,
+                                                                                tokenizer_tgt=tokenizer_tgt))
 
     return train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader
 
