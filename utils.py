@@ -4,8 +4,6 @@ from tokenizers import Tokenizer
 from tokenizers.models import WordLevel
 from tokenizers.trainers import WordLevelTrainer
 from tokenizers.pre_tokenizers import Whitespace
-import nltk
-from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
 from torchtext.data.metrics import bleu_score
 
 def get_all_sentences(dataset, lang):
@@ -36,9 +34,6 @@ def get_tokenizer(config, dataset):
 def bleu_score(tgt_text, pred_text, max_n, func_bleu):
     scores = []
     for j in range(1, max_n + 1):
-        if j == 4:
-            scores.append(func_bleu(tgt_text, pred_text))
-            continue
         weights = [1 / j] * j
         scores.append(func_bleu(pred_text, tgt_text, j, weights))
     return scores
