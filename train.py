@@ -220,7 +220,7 @@ def train_model(config):
                 print(f"bleu_{i + 1}_train: {scores_train[i]} - bleu_{i + 1}_val: {scores_val[i]}")
 
         print(f"Mean train loss: {train_loss / len(train_dataloader)}")
-        # print(f"Mean validation loss: {validation_loss / len(validation_dataloader)}")
+        print(f"Mean validation loss: {validation_loss / len(validation_dataloader)}")
 
         model_filename = get_weights_file_path(config, f"{epoch:02d}")
         save_model(model=model,
