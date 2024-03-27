@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from .beam_search import beam_search
-from .utils import sent_scores, corpus_scores, create_src_mask
+from .utils import calc_bleu_score, create_src_mask
 
 def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size, have_test=False):
     device = config["device"]
@@ -40,13 +40,13 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             print(f"{f'PREDICTED: ':>12}{pred_text}")
             print(f"{f'TOKENS TARGET: ':>12}{[tokenizer_tgt.encode(tgt_text).tokens]}")
             print(f"{f'TOKENS PREDICTED: ':>12}{tokenizer_tgt.encode(pred_text).tokens}")
-            scores = sent_scores(tgt_text=[tokenizer_tgt.encode(tgt_text).tokens],
-                                    pred_text=tokenizer_tgt.encode(pred_text).tokens)
+            scores = calc_bleu_score(refs=[[tokenizer_tgt.encode(tgt_text).tokens]],
+                                     cands=[tokenizer_tgt.encode(pred_text).tokens])
             print(f'BLEU OF SENTENCE {count}')
             for i in range(0, len(scores)):
                 print(f'BLEU_{i + 1}: {scores[i]}')
-                
-    scores_corpus = corpus_scores(tgt_texts=expected,
-                                    pred_texts=predicted)
+
+    scores_corpus = calc_bleu_score(refs=expected,
+                                cands=predicted)
     
     return scores_corpus

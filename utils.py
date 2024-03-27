@@ -31,24 +31,15 @@ def get_tokenizer(config, dataset):
         tokenizer_tgt = get_or_build_tokenizer(config, dataset, config["lang_tgt"])
     return tokenizer_src, tokenizer_tgt
 
-def bleu_score(tgt_text, pred_text, max_n, func_bleu):
+def calc_bleu_score(refs, cands):
     scores = []
-    for j in range(1, max_n + 1):
+    for j in range(1, 5):
         weights = [1 / j] * j
-        scores.append(func_bleu(pred_text, tgt_text, j, weights))
+        scores.append(bleu_score(candidate_corpus=cands,
+                                 references_corpus=refs,
+                                 max_n=j,
+                                 weights=weights))
     return scores
-
-def sent_scores(tgt_text, pred_text, max_n=4):
-    return bleu_score(tgt_text=tgt_text,
-                      pred_text=pred_text,
-                      max_n=max_n,
-                      func_bleu=bleu_score)
-
-def corpus_scores(tgt_texts, pred_texts, max_n=4):
-    return bleu_score(tgt_text=tgt_texts,
-                      pred_text=pred_texts,
-                      max_n=max_n,
-                      func_bleu=bleu_score)
 
 def create_src_mask(src, pad_id_token, device):
     src_mask = (src != pad_id_token).unsqueeze(0).unsqueeze(0).permute(2, 0, 1, 3).type(torch.int64)
