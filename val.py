@@ -2,7 +2,7 @@ from tqdm import tqdm
 from .beam_search import beam_search
 from .utils import sent_scores, corpus_scores, create_src_mask
 
-def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size):
+def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size, have_test=False):
     device = config["device"]
 
     source_texts = []
@@ -33,7 +33,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
 
         count += 1
         
-        if count % 20 == 0:
+        if count % 20 == 0 and not have_test:
             print()
             print(f"{f'SOURCE: ':>12}{src_text}")
             print(f"{f'TARGET: ':>12}{tgt_text}")

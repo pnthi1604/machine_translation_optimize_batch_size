@@ -49,12 +49,12 @@ def test_model(config):
         for beam_size in range(1, max_beam + 1):
             scores_corpus = validation(model=model,
                     config=config,
-                    writer=writer,
                     tokenizer_src=tokenizer_src,
                     tokenizer_tgt=tokenizer_tgt,
                     validation_dataloader=test_dataloader,
                     epoch=epoch,
-                    beam_size=beam_size)
+                    beam_size=beam_size,
+                    have_test=True)
             
             for i in range(len(scores_corpus)):
                 bleu_results[f"Test_model_Bleu_{i + 1}"][f"Beam_size={beam_size}"] = scores_corpus[i]

@@ -33,7 +33,7 @@ def handle_lang_vi(sent, lang, config):
     if lang == "vi" and config["underthesea"]:
         return word_tokenize(sent, format="text")
     elif lang == "vi" and config["pyvi"]:
-        return ViTokenizer.tokenize(sent).split()
+        return ViTokenizer.tokenize(sent)
     return sent
 
 def preprocess_function(config, example):
