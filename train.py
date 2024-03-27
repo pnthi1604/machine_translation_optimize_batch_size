@@ -170,6 +170,32 @@ def train_model(config):
 
         with torch.no_grad():
             model.eval()
+            batch_iterator = tqdm(validation_dataloader, desc=f"Validation Loss Epoch {epoch:02d}")
+            for batch in batch_iterator:
+                src = batch['encoder_input'].to(device) # (b, seq_len)
+                tgt = batch['decoder_input'].to(device) # (B, seq_len)
+                src_mask = create_src_mask(src, pad_id_token, device) # (B, 1, 1, seq_len)
+                tgt_mask = create_tgt_mask(tgt, pad_id_token, device) # (B, 1, seq_len, seq_len)
+
+                encoder_output = model.encode(src=src, src_mask=src_mask)
+                decoder_output = model.deocde(encoder_output=encoder_output,
+                                            tgt=tgt,
+                                            tgt_mask=tgt_mask,
+                                            src_mask=src_mask)
+                logits = model.out(transformer_out=decoder_output)
+                
+                label = batch['label'].to(device)
+
+                loss = loss_fn(logits.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
+                batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
+                validation_loss += loss.item()
+
+            writer.add_scalars("Loss", {
+                "Train": train_loss / len(train_dataloader),
+                "Validation": validation_loss / len(validation_dataloader),
+            }, epoch)
+            writer.close()
+
             scores_val = validation(model=model,
                                     config=config,
                                     tokenizer_src=tokenizer_src,

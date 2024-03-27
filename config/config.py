@@ -48,8 +48,8 @@ def get_config():
     config["batch_size_train"] = 32
     config["batch_size_validation"] = 32
     config["num_epochs"] = 10
-    config["train_size"] = 0.99
-    config["num_bleu_validation"] = 200
+    config["train_size"] = 0.9
+    config["num_bleu_validation"] = 100
 
     # Validation Bleu metric
     config["max_beam"] = 1

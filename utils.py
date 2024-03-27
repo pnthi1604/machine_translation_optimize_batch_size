@@ -6,6 +6,7 @@ from tokenizers.trainers import WordLevelTrainer
 from tokenizers.pre_tokenizers import Whitespace
 import nltk
 from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
+from torchtext.data.metrics import bleu_score
 
 def get_all_sentences(dataset, lang):
     for item in dataset:
@@ -32,27 +33,27 @@ def get_tokenizer(config, dataset):
         tokenizer_tgt = get_or_build_tokenizer(config, dataset, config["lang_tgt"])
     return tokenizer_src, tokenizer_tgt
 
-def bleu_score(tgt_text, pred_text, max_n, func_bleu: nltk.translate.bleu_score):
+def bleu_score(tgt_text, pred_text, max_n, func_bleu):
     scores = []
     for j in range(1, max_n + 1):
         if j == 4:
             scores.append(func_bleu(tgt_text, pred_text))
             continue
         weights = [1 / j] * j
-        scores.append(func_bleu(tgt_text, pred_text, tuple(weights)))
+        scores.append(func_bleu(pred_text, tgt_text, j, weights))
     return scores
 
 def sent_scores(tgt_text, pred_text, max_n=4):
     return bleu_score(tgt_text=tgt_text,
                       pred_text=pred_text,
                       max_n=max_n,
-                      func_bleu=sentence_bleu)
+                      func_bleu=bleu_score)
 
 def corpus_scores(tgt_texts, pred_texts, max_n=4):
     return bleu_score(tgt_text=tgt_texts,
                       pred_text=pred_texts,
                       max_n=max_n,
-                      func_bleu=corpus_bleu)
+                      func_bleu=bleu_score)
 
 def create_src_mask(src, pad_id_token, device):
     src_mask = (src != pad_id_token).unsqueeze(0).unsqueeze(0).permute(2, 0, 1, 3).type(torch.int64)
