@@ -50,17 +50,6 @@ def get_lr(global_step: int, config):
   global_step = max(global_step, 1)
   return (config["d_model"] ** -0.5) * min(global_step ** (-0.5), global_step * config["warmup_steps"] ** (-1.5))
 
-def get_lr_scheduler(config, optimizer):
-    if config["lr_scheduler"]:
-        if config["lambdalr"]:
-            lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer,lr_lambda= lambda global_step: get_lr(global_step=global_step, config=config))
-        elif config["steplr"]:
-            lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=config["step_size_steplr"], gamma=config["gamma_steplr"])
-    else:
-        lr_scheduler = None
-
-    return lr_scheduler
-
 def train_model(config):
     # get config and create dictional for save model and tokenizer
     create_all_dic(config=config)
@@ -107,14 +96,13 @@ def train_model(config):
     # preload or starting from scratch
     initial_epoch = 0
     global_step = 0
-    lr_scheduler = get_lr_scheduler(config=config, optimizer=optimizer)
-    # if config["lr_scheduler"]:
-    #     if config["lambdalr"]:
-    #         lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer,lr_lambda= lambda global_step: get_lr(global_step=global_step, config=config))
-    #     elif config["steplr"]:
-    #         lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=config["step_size_steplr"], gamma=config["gamma_steplr"])
-    # else:
-    #     lr_scheduler = None
+    if config["lr_scheduler"]:
+        if config["lambdalr"]:
+            lr_scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer,lr_lambda= lambda global_step: get_lr(global_step=global_step, config=config))
+        elif config["steplr"]:
+            lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=config["step_size_steplr"], gamma=config["gamma_steplr"])
+    else:
+        lr_scheduler = None
     preload = config["preload"]
     model_filename = (str(weights_file_path(config)[-1]) if weights_file_path(config) else None) if preload == 'latest' else get_weights_file_path(config, preload) if preload else None
     if model_filename:
