@@ -103,8 +103,6 @@ def test_model_with_beam_size(config, beam_size):
         for i in range(0, 4):
             bleu_results[f"Test_model_Bleu_{i + 1}"] = {}
 
-        max_beam = config["beam_test"]
-
         scores_corpus = validation(model=model,
                 config=config,
                 tokenizer_src=tokenizer_src,
