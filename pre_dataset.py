@@ -215,9 +215,7 @@ def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
     print("\nĐã load map data thành công!\n")
 
     test_dataset = BilingualDataset(
-        ds=dataset["test"], 
-        tokenizer_src=tokenizer_src,
-        tokenizer_tgt=tokenizer_tgt,
+        ds=dataset["test"],
         src_lang=config["lang_src"],
         tgt_lang=config["lang_tgt"],
     )
@@ -225,6 +223,9 @@ def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
     test_dataloader = DataLoader(test_dataset, batch_size=1,
                                             shuffle=False,
-                                            collate_fn=lambda batch: collate_fn(batch=batch, pad_id_token=pad_id_token))
+                                            collate_fn=lambda batch: collate_fn(batch=batch,
+                                                                                pad_id_token=pad_id_token,
+                                                                                tokenizer_src=tokenizer_src,
+                                                                                tokenizer_tgt=tokenizer_tgt))
 
     return test_dataloader
