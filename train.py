@@ -103,6 +103,7 @@ def train_model(config):
             lr_scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=config["step_size_steplr"], gamma=config["gamma_steplr"])
     else:
         lr_scheduler = None
+        
     preload = config["preload"]
     model_filename = (str(weights_file_path(config)[-1]) if weights_file_path(config) else None) if preload == 'latest' else get_weights_file_path(config, preload) if preload else None
     if model_filename:
