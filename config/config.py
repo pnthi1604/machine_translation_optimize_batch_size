@@ -66,6 +66,7 @@ def get_config():
     config["data_path"] = "data"
     config["map_data_path"] = "map_data"
     config["save_config_pattern"] = "config/config_*"
+    config["min_epoch_save"] = 8
 
     # Different
     config["preload"] = "latest"
