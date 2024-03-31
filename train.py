@@ -50,7 +50,7 @@ def get_lr(global_step: int, config):
   global_step = max(global_step, 1)
   return (config["d_model"] ** -0.5) * min(global_step ** (-0.5), global_step * config["warmup_steps"] ** (-1.5))
 
-def train_model(config):
+def train_model(config, model_filename=None):
     # get config and create dictional for save model and tokenizer
     create_all_dic(config=config)
 
@@ -105,7 +105,8 @@ def train_model(config):
         lr_scheduler = None
         
     preload = config["preload"]
-    model_filename = (str(weights_file_path(config)[-1]) if weights_file_path(config) else None) if preload == 'latest' else get_weights_file_path(config, preload) if preload else None
+    if not model_filename:
+        model_filename = (str(weights_file_path(config)[-1]) if weights_file_path(config) else None) if preload == 'latest' else get_weights_file_path(config, preload) if preload else None
     if model_filename:
         print(f'Preloading model {model_filename}')
         state = torch.load(model_filename)
