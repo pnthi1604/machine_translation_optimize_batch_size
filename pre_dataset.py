@@ -6,6 +6,8 @@ import os
 from datasets import load_dataset, load_from_disk, load_from_disk
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
+from bs4 import BeautifulSoup
+import contractions
 
 class BilingualDataset(Dataset):
 
@@ -25,9 +27,10 @@ class BilingualDataset(Dataset):
 
         return (src_text, tgt_text)
 
-def clean_data(sent):
-    clean_sent = sent.lower().strip()
-    return clean_sent
+def clean_data(text):
+    text = BeautifulSoup(text, "html.parser").get_text()
+    text = text.lower()
+    return contractions.fix(text.replace(" '", "'"))
 
 def handle_lang_vi(sent, lang, config):
     if lang == "vi" and config["underthesea"]:
