@@ -34,36 +34,36 @@ def test_model(config):
     
     writer = SummaryWriter(config["experiment_name"])
     model_filenames = weights_file_path(config=config)
+    model_filename = model_filenames[-1]
 
-    for epoch in range(len(model_filenames) - 1, len(model_filenames)):
-        model_filename = str(model_filenames[epoch])
-        state = torch.load(model_filename)
-        model.load_state_dict(state['model_state_dict'])
+    model_filename = str(model_filenames[0])
+    state = torch.load(model_filename)
+    model.load_state_dict(state['model_state_dict'])
 
-        bleu_results = {} #[bleu <1, 2, 3, 4>][beam_size]
-        for i in range(0, 4):
-            bleu_results[f"Test_model_Bleu_{i + 1}"] = {}
+    bleu_results = {} #[bleu <1, 2, 3, 4>][beam_size]
+    for i in range(0, 4):
+        bleu_results[f"Test_model_Bleu_{i + 1}"] = {}
 
-        max_beam = config["beam_test"]
+    max_beam = config["beam_test"]
 
-        for beam_size in range(1, max_beam + 1):
-            scores_corpus = validation(model=model,
-                    config=config,
-                    tokenizer_src=tokenizer_src,
-                    tokenizer_tgt=tokenizer_tgt,
-                    validation_dataloader=test_dataloader,
-                    epoch=epoch,
-                    beam_size=beam_size,
-                    have_test=True)
-            
-            for i in range(len(scores_corpus)):
-                bleu_results[f"Test_model_Bleu_{i + 1}"][f"Beam_size={beam_size}"] = scores_corpus[i]
+    for beam_size in range(1, max_beam + 1):
+        scores_corpus = validation(model=model,
+                config=config,
+                tokenizer_src=tokenizer_src,
+                tokenizer_tgt=tokenizer_tgt,
+                validation_dataloader=test_dataloader,
+                epoch=0,
+                beam_size=beam_size,
+                have_test=True)
+        
+        for i in range(len(scores_corpus)):
+            bleu_results[f"Test_model_Bleu_{i + 1}"][f"Beam_size={beam_size}"] = scores_corpus[i]
 
-        print()
-        print(bleu_results)
-        for i in range(0, 4):
-            writer.add_scalars(f"Test_model_Bleu_{i + 1}", bleu_results[f"Test_model_Bleu_{i + 1}"], epoch)
-            writer.close()
+    print()
+    print(bleu_results)
+    for i in range(0, 4):
+        writer.add_scalars(f"Test_model_Bleu_{i + 1}", bleu_results[f"Test_model_Bleu_{i + 1}"], 0)
+        writer.close()
 
 def test_model_with_beam_size(config, beam_size):
     device = config["device"]

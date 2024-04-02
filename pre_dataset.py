@@ -27,10 +27,13 @@ class BilingualDataset(Dataset):
 
         return (src_text, tgt_text)
 
-def clean_data(text):
-    text = BeautifulSoup(text, "html.parser").get_text()
+def clean_data(text, lang):
+    if lang == "en":
+        text = BeautifulSoup(text, "html.parser").get_text()
     text = text.lower()
-    return contractions.fix(text.replace(" '", "'"))
+    if lang == "en":
+        text = contractions.fix(text.replace(" '", "'"))
+    return text
 
 def handle_lang_vi(sent, lang, config):
     if lang == "vi" and config["underthesea"]:
@@ -41,8 +44,8 @@ def handle_lang_vi(sent, lang, config):
 
 def preprocess_function(config, example):
     output = {}
-    output[config['lang_src']] = handle_lang_vi(clean_data(example['translation'][config['lang_src']]), lang=config["lang_src"], config=config)
-    output[config['lang_tgt']] = handle_lang_vi(clean_data(example['translation'][config['lang_tgt']]), lang=config["lang_tgt"], config=config)
+    output[config['lang_src']] = handle_lang_vi(clean_data(example['translation'][config['lang_src']], config["lang_src"]), lang=config["lang_src"], config=config)
+    output[config['lang_tgt']] = handle_lang_vi(clean_data(example['translation'][config['lang_tgt']], config["lang_tgt"]), lang=config["lang_tgt"], config=config)
     return output
 
 def load_data(config):
