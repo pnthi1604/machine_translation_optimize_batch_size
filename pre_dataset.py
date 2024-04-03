@@ -29,8 +29,11 @@ class BilingualDataset(Dataset):
 
 def clean_data(text, lang):
     text = BeautifulSoup(text, "html.parser").get_text()
-    text = text.lower()
-    text = contractions.fix(text.replace(" '", "'"))
+    text = (text.lower()).replace(" '", "'")
+    if lang == "en":
+        text = contractions.fix(text)
+    if lang == "vi":
+        text = text.replace("you", "u")
     return text
 
 def handle_lang_vi(sent, lang, config):
