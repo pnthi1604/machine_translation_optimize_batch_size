@@ -60,12 +60,13 @@ def load_data(config):
 
     if not os.path.exists(data_path):
         dataset = load_dataset(config["data"], config["subset"])
-        dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
-        dataset_split["validation"] = dataset_split.pop("test")
-        dataset_split["test"] = dataset["test"]
-        dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
-        dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
-        dataset_split.save_to_disk(data_path)
+        # dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
+        # dataset_split["validation"] = dataset_split.pop("test")
+        # dataset_split["test"] = dataset["test"]
+        # dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
+        # dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
+        # dataset_split.save_to_disk(data_path)
+        dataset.save_to_disk(data_path)
         print("\nĐã lưu dataset thành công!\n")
 
     dataset = load_from_disk(data_path)
@@ -149,7 +150,13 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
                                                           tokenizer_src=tokenizer_src,
                                                           tokenizer_tgt=tokenizer_tgt,
                                                           config=config))
-        dataset.save_to_disk(map_data_path)
+        dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
+        dataset_split["validation"] = dataset_split.pop("test")
+        dataset_split["test"] = dataset["test"]
+        dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
+        dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
+        dataset_split.save_to_disk(map_data_path)
+        # dataset.save_to_disk(map_data_path)
         print("\nĐã lưu map data thành công!\n")
     
     dataset = load_from_disk(map_data_path)
