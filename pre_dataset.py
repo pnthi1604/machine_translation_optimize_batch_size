@@ -21,6 +21,11 @@ class BilingualDataset(Dataset):
         return len(self.ds)
 
     def __getitem__(self, idx):
+        #test 
+        print({
+            "src_lang": self.src_lang,
+            "tgt_lang": self.tgt_lang,
+        })
         src_target_pair = self.ds[idx]
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
@@ -222,7 +227,12 @@ def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
                                                           tokenizer_src=tokenizer_src,
                                                           tokenizer_tgt=tokenizer_tgt,
                                                           config=config))
-        dataset.save_to_disk(map_data_path)
+        dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
+        dataset_split["validation"] = dataset_split.pop("test")
+        dataset_split["test"] = dataset["test"]
+        dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
+        dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
+        dataset_split.save_to_disk(map_data_path)
         print("\nĐã lưu map data thành công!\n")
     
     dataset = load_from_disk(map_data_path)
