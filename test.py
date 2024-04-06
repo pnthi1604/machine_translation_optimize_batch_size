@@ -3,10 +3,11 @@ from .val import validation
 from .config import weights_file_path
 import torch
 from torch.utils.tensorboard import SummaryWriter
-from .utils import get_tokenizer
+from .utils import get_tokenizer, set_seed
 from .pre_dataset import load_data, get_dataloader_test
 
 def test_model(config):
+    set_seed()
     device = config["device"]
     device = torch.device(device)
 
@@ -65,6 +66,7 @@ def test_model(config):
         writer.close()
 
 def test_model_with_beam_size(config, beam_size):
+    set_seed()
     device = config["device"]
     device = torch.device(device)
 
@@ -96,6 +98,8 @@ def test_model_with_beam_size(config, beam_size):
 
     state = torch.load(model_filename)
     model.load_state_dict(state['model_state_dict'])
+
+    model.eval()
 
     bleu_results = {} #[bleu <1, 2, 3, 4>][beam_size]
     for i in range(0, 4):
