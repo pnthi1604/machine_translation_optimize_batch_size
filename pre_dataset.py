@@ -22,11 +22,11 @@ class BilingualDataset(Dataset):
 
     def __getitem__(self, idx):
         #test 
-        print(self.ds[idx])
-        print({
-            "src_lang": self.src_lang,
-            "tgt_lang": self.tgt_lang,
-        })
+        # print(self.ds[idx])
+        # print({
+        #     "src_lang": self.src_lang,
+        #     "tgt_lang": self.tgt_lang,
+        # })
         src_target_pair = self.ds[idx]
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
