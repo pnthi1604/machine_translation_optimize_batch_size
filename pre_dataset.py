@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 from bs4 import BeautifulSoup
 import contractions
+from utils import worker_init_fn
 
 class BilingualDataset(Dataset):
 
@@ -199,25 +200,29 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
                                   collate_fn=lambda batch: collate_fn(batch=batch,
                                                                       pad_id_token=pad_id_token,
                                                                       tokenizer_src=tokenizer_src,
-                                                                      tokenizer_tgt=tokenizer_tgt))
+                                                                      tokenizer_tgt=tokenizer_tgt),
+                                worker_init_fn=worker_init_fn)
     validation_dataloader = DataLoader(validation_dataset, batch_size=config["batch_size_validation"],
                                        shuffle=False,
                                        collate_fn=lambda batch: collate_fn(batch=batch,
                                                                            pad_id_token=pad_id_token,
                                                                            tokenizer_src=tokenizer_src,
-                                                                           tokenizer_tgt=tokenizer_tgt))
+                                                                           tokenizer_tgt=tokenizer_tgt),
+                                worker_init_fn=worker_init_fn)
     bleu_validation_dataloader = DataLoader(bleu_validation_dataset, batch_size=1,
                                             shuffle=False,
                                             collate_fn=lambda batch: collate_fn(batch=batch,
                                                                                 pad_id_token=pad_id_token,
                                                                                 tokenizer_src=tokenizer_src,
-                                                                                tokenizer_tgt=tokenizer_tgt))
+                                                                                tokenizer_tgt=tokenizer_tgt),
+                                            worker_init_fn=worker_init_fn)
     bleu_train_dataloader = DataLoader(bleu_train_dataset, batch_size=1,
                                             shuffle=False,
                                             collate_fn=lambda batch: collate_fn(batch=batch,
                                                                                 pad_id_token=pad_id_token,
                                                                                 tokenizer_src=tokenizer_src,
-                                                                                tokenizer_tgt=tokenizer_tgt))
+                                                                                tokenizer_tgt=tokenizer_tgt),
+                                            worker_init_fn=worker_init_fn)
 
     return train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader
 
@@ -251,6 +256,7 @@ def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
                                             collate_fn=lambda batch: collate_fn(batch=batch,
                                                                                 pad_id_token=pad_id_token,
                                                                                 tokenizer_src=tokenizer_src,
-                                                                                tokenizer_tgt=tokenizer_tgt))
+                                                                                tokenizer_tgt=tokenizer_tgt),
+                                            worker_init_fn=worker_init_fn)
 
     return test_dataloader

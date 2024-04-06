@@ -31,6 +31,9 @@ def get_tokenizer(config, dataset):
         tokenizer_tgt = get_or_build_tokenizer(config, dataset, config["lang_tgt"])
     return tokenizer_src, tokenizer_tgt
 
+def worker_init_fn(worker_id):
+    torch.manual_seed(42 + worker_id)
+
 def calc_bleu_score(refs, cands):
     scores = []
     for j in range(1, 5):
