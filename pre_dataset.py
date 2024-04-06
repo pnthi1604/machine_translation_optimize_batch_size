@@ -22,6 +22,7 @@ class BilingualDataset(Dataset):
 
     def __getitem__(self, idx):
         #test 
+        print(self.ds[idx])
         print({
             "src_lang": self.src_lang,
             "tgt_lang": self.tgt_lang,
