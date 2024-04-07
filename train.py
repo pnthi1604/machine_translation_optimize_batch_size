@@ -11,6 +11,8 @@ from .pre_dataset import load_data, get_dataloader
 from .val import validation
 
 def get_model(config, device, src_vocab_size, tgt_vocab_size, pad_id_token):
+    print(f"src_vocab_size = {src_vocab_size}")
+    print(f"tgt_vocab_size = {tgt_vocab_size}")
     seq2seq_transformer = Seq2seqTransformer(src_vocab_size=src_vocab_size,
                                tgt_vocab_size=tgt_vocab_size,
                                pad_id_token=pad_id_token,
@@ -62,9 +64,6 @@ def train_model(config, model_filename=None):
     dataset = load_data(config)
     tokenizer_src, tokenizer_tgt = get_tokenizer(config=config,
                                                  dataset=dataset)
-    
-    print(f"src_vocab_size = {tokenizer_src.get_vocab_size()}")
-    print(f"tgt_vocab_size = {tokenizer_tgt.get_vocab_size()}")
     
     src_vocab_size = tokenizer_src.get_vocab_size()
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
