@@ -53,7 +53,8 @@ def translate_with_beam_size(config, beam_size, sentence):
     ).to(device)
 
     src_mask = create_src_mask(src=src,
-                            pad_id_token=pad_id_token)
+                            pad_id_token=pad_id_token,
+                            device=device)
     
     with torch.no_grad():
         model.eval()
