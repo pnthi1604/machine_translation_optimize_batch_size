@@ -37,7 +37,7 @@ def translate_with_beam_size(config, beam_size, sentence):
     with torch.no_grad():
         sos_token = torch.tensor([tokenizer_tgt.token_to_id("[SOS]")], dtype=torch.int64)
         eos_token = torch.tensor([tokenizer_tgt.token_to_id("[EOS]")], dtype=torch.int64)
-        enc_input_tokens = tokenizer_src.encode(sentence).ids
+        enc_input_tokens = tokenizer_src.encode(sentence).ids 
 
         src = torch.cat(
             [
