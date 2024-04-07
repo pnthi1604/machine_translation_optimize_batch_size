@@ -21,11 +21,9 @@ def translate_with_beam_size(config, beam_size, sentence):
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
 
-    model_weights = weights_file_path(config=config)
-    if len(model_weights):
-        model_filename = model_weights[-1]
-    else:
-        ValueError("Not have model in here")
+    model_filenames = weights_file_path(config=config)
+    model_filename = model_filenames[-1]
+    print(f"{model_filename = }")
 
     model = get_model(config=config,
                       device=device,
