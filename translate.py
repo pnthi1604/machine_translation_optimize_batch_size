@@ -36,22 +36,23 @@ def translate_with_beam_size(config, beam_size, sentence):
     sos_token = torch.tensor([tokenizer_tgt.token_to_id("[SOS]")], dtype=torch.int64)
     eos_token = torch.tensor([tokenizer_tgt.token_to_id("[EOS]")], dtype=torch.int64)
 
-    # model.eval()
+
+    enc_input_tokens = tokenizer_src.encode(sentence).ids 
+
+    src = torch.cat(
+        [
+            sos_token,
+            torch.tensor(enc_input_tokens, dtype=torch.int64),
+            eos_token,
+        ],
+        dim=0,
+    ).to(device)
+
+    src_mask = create_src_mask(src=src,
+                            pad_id_token=pad_id_token)
+    
     with torch.no_grad():
-        enc_input_tokens = tokenizer_src.encode(sentence).ids 
-
-        src = torch.cat(
-            [
-                sos_token,
-                torch.tensor(enc_input_tokens, dtype=torch.int64),
-                eos_token,
-            ],
-            dim=0,
-        ).to(device)
-
-        src_mask = create_src_mask(src=src,
-                                pad_id_token=pad_id_token)
-        
+        model.eval()
         model_out = beam_search(model=model,
                         config=config,
                         beam_size=beam_size,
