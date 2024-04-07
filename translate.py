@@ -31,8 +31,7 @@ def translate_with_beam_size(config, beam_size, sentence):
                       device=device,
                       src_vocab_size=src_vocab_size,
                       tgt_vocab_size=tgt_vocab_size,
-                      pad_id_token=pad_id_token,
-    )
+                      pad_id_token=pad_id_token)
 
     state = torch.load(model_filename)
     model.load_state_dict(state["model_state_dict"])
