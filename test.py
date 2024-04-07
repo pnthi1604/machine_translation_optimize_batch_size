@@ -53,8 +53,7 @@ def test_model(config):
                 tokenizer_tgt=tokenizer_tgt,
                 validation_dataloader=test_dataloader,
                 epoch=0,
-                beam_size=beam_size,
-                have_test=True)
+                beam_size=beam_size)
         
         for i in range(len(scores_corpus)):
             bleu_results[f"Test_model_Bleu_{i + 1}"][f"Beam_size={beam_size}"] = scores_corpus[i]
@@ -111,8 +110,7 @@ def test_model_with_beam_size(config, beam_size):
             tokenizer_tgt=tokenizer_tgt,
             validation_dataloader=test_dataloader,
             epoch=0,
-            beam_size=beam_size,
-            have_test=True)
+            beam_size=beam_size)
     
     for i in range(len(scores_corpus)):
         bleu_results[f"Test_model_Bleu_{i + 1}"][f"Beam_size={beam_size}"] = scores_corpus[i]

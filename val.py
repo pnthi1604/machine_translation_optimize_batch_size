@@ -3,7 +3,7 @@ from .beam_search import beam_search
 from .utils import calc_bleu_score, create_src_mask
 import torch
 
-def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size, have_test=False):
+def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size):
     with torch.no_grad():
         device = config["device"]
 
@@ -34,8 +34,10 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             predicted.append(tokenizer_tgt.encode(pred_text).tokens)
 
             count += 1
+
+            print_step = len(validation_dataloader) // 10
             
-            if count % 20 == 0 and not have_test:
+            if count % print_step == 0:
                 print()
                 print(f"{f'SOURCE: ':>12}{src_text}")
                 print(f"{f'TARGET: ':>12}{tgt_text}")
