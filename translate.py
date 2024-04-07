@@ -26,11 +26,11 @@ def translate_with_beam_size(config, beam_size, sentence):
         model_filename = model_weights[-1]
     else:
         ValueError("Not have model in here")
-        
+
     model = get_model(config=config,
                       device=device,
                       src_vocab_size=src_vocab_size,
-                      tgt_vocab_size=tokenizer_tgt,
+                      tgt_vocab_size=tgt_vocab_size,
                       pad_id_token=pad_id_token,
     )
 
