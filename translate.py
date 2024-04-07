@@ -14,8 +14,8 @@ def translate_with_beam_size(config, beam_size, sentence):
     
     tokenizer_src = Tokenizer.from_file(config["tokenizer_file"].format(config["lang_src"]))
     tokenizer_tgt = Tokenizer.from_file(config["tokenizer_file"].format(config["lang_tgt"]))
-    print(f"{tokenizer_src = }")
-    print(f"{tokenizer_tgt = }")
+    # print(f"{tokenizer_src = }")
+    # print(f"{tokenizer_tgt = }")
 
     src_vocab_size = tokenizer_src.get_vocab_size()
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
@@ -23,7 +23,7 @@ def translate_with_beam_size(config, beam_size, sentence):
 
     model_filenames = weights_file_path(config=config)
     model_filename = model_filenames[-1]
-    print(f"{model_filename = }")
+    # print(f"{model_filename = }")
 
     model = get_model(config=config,
                       device=device,
@@ -37,9 +37,9 @@ def translate_with_beam_size(config, beam_size, sentence):
     sos_token = torch.tensor([tokenizer_tgt.token_to_id("[SOS]")], dtype=torch.int64)
     eos_token = torch.tensor([tokenizer_tgt.token_to_id("[EOS]")], dtype=torch.int64)
 
-    print(f"{sos_token = }")
-    print(f"{eos_token = }")
-    print(f"{src_text = }")
+    # print(f"{sos_token = }")
+    # print(f"{eos_token = }")
+    # print(f"{src_text = }")
 
     enc_input_tokens = tokenizer_src.encode(src_text).ids
 
