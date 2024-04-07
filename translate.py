@@ -14,6 +14,8 @@ def translate_with_beam_size(config, beam_size, sentence):
     
     tokenizer_src = Tokenizer.from_file(config["tokenizer_file"].format(config["lang_src"]))
     tokenizer_tgt = Tokenizer.from_file(config["tokenizer_file"].format(config["lang_tgt"]))
+    print(f"{tokenizer_src = }")
+    print(f"{tokenizer_tgt = }")
 
     pad_id_token = tokenizer_src.token_to_id("[PAD]")
 
@@ -38,7 +40,6 @@ def translate_with_beam_size(config, beam_size, sentence):
     print(f"{sos_token = }")
     print(f"{eos_token = }")
     print(f"{src_text = }")
-    print(f"{tokenizer_src = }")
 
     enc_input_tokens = tokenizer_src.encode(src_text).ids
 
