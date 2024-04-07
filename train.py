@@ -11,8 +11,6 @@ from .pre_dataset import load_data, get_dataloader
 from .val import validation
 
 def get_model(config, device, src_vocab_size, tgt_vocab_size, pad_id_token):
-    print(f"src_vocab_size = {src_vocab_size}")
-    print(f"tgt_vocab_size = {tgt_vocab_size}")
     seq2seq_transformer = Seq2seqTransformer(src_vocab_size=src_vocab_size,
                                tgt_vocab_size=tgt_vocab_size,
                                pad_id_token=pad_id_token,
