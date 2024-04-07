@@ -52,6 +52,8 @@ def translate_with_beam_size(config, beam_size, sentence):
         dim=0,
     ).to(device)
 
+    src = src.unsqueeze(0)
+
     src_mask = create_src_mask(src=src,
                             pad_id_token=pad_id_token,
                             device=device)
