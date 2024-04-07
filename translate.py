@@ -4,6 +4,10 @@ from .train import get_model
 from tokenizers import Tokenizer
 from .config import weights_file_path
 from .utils import create_src_mask
+from .pre_dataset import clean_data, handle_lang_vi
+
+def handle_sentence(sentence, config):
+    return handle_lang_vi(sent=clean_data(text=sentence, lang=config["lang_src"]), lang=config["lang_src"], config=config)
 
 def translate_with_beam_size(config, beam_size, sentence):
     device = config["device"]
@@ -27,6 +31,7 @@ def translate_with_beam_size(config, beam_size, sentence):
 
     state = torch.load(model_filename)
     model.load_state_dict(state["model_state_dict"])
+    sentence = handle_sentence(sentence=sentence, config=config)
 
     model.eval()
     with torch.no_grad():
