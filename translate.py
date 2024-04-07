@@ -35,19 +35,30 @@ def translate_with_beam_size(config, beam_size, sentence):
 
     model.eval()
     with torch.no_grad():
-        src = tokenizer_src.encode(sentence).to(device)
+        sos_token = torch.tensor([tokenizer_tgt.token_to_id("[SOS]")], dtype=torch.int64)
+        eos_token = torch.tensor([tokenizer_tgt.token_to_id("[EOS]")], dtype=torch.int64)
+        enc_input_tokens = tokenizer_src.encode(src).ids
 
-    src_mask = create_src_mask(src=src,
-                               pad_id_token=pad_id_token)
-    
-    model_out = beam_search(model=model,
-                       config=config,
-                       beam_size=beam_size,
-                       tokenizer_src=tokenizer_src,
-                       tokenizer_tgt=tokenizer_tgt,
-                       src=src,
-                       src_mask=src_mask)
-    
-    pred_text = tokenizer_tgt.decode(model_out.detach().cpu().numpy())
+        src = torch.cat(
+            [
+                sos_token,
+                torch.tensor(enc_input_tokens, dtype=torch.int64),
+                eos_token,
+            ],
+            dim=0,
+        ).to(device)
 
-    print(pred_text)
+        src_mask = create_src_mask(src=src,
+                                pad_id_token=pad_id_token)
+        
+        model_out = beam_search(model=model,
+                        config=config,
+                        beam_size=beam_size,
+                        tokenizer_src=tokenizer_src,
+                        tokenizer_tgt=tokenizer_tgt,
+                        src=src,
+                        src_mask=src_mask)
+        
+        pred_text = tokenizer_tgt.decode(model_out.detach().cpu().numpy())
+
+        print(pred_text)
