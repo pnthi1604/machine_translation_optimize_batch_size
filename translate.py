@@ -32,12 +32,13 @@ def translate_with_beam_size(config, beam_size, sentence):
     state = torch.load(model_filename)
     model.load_state_dict(state["model_state_dict"])
     sentence = handle_sentence(sentence=sentence, config=config)
-    print(f"{sentence = }")
     sos_token = torch.tensor([tokenizer_tgt.token_to_id("[SOS]")], dtype=torch.int64)
     eos_token = torch.tensor([tokenizer_tgt.token_to_id("[EOS]")], dtype=torch.int64)
 
+    print(f"{sentence = }")
+    print(f"{tokenizer_src = }")
 
-    enc_input_tokens = tokenizer_src.encode(sentence).ids 
+    enc_input_tokens = tokenizer_src.encode(sentence).ids
 
     src = torch.cat(
         [
