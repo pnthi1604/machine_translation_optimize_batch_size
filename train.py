@@ -65,6 +65,8 @@ def train_model(config, model_filename=None):
     
     src_vocab_size = tokenizer_src.get_vocab_size()
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
+    config["src_vocab_size"] = src_vocab_size
+    config["tgt_vocab_size"] = tgt_vocab_size
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
 
     # get dataloader
