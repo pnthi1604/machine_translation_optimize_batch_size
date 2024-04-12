@@ -225,7 +225,7 @@ def train_model(config, model_filename=None):
         print(f"Mean validation loss: {validation_loss / len(validation_dataloader)}")
 
         model_filename = get_weights_file_path(config, f"{epoch:02d}")
-        if epoch == 5 or epoch == 9:
+        if epoch == config["num_epochs"] - 1:
             save_model(model=model,
                         epoch=epoch,
                         global_step=global_step,
