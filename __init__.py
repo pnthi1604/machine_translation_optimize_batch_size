@@ -4,3 +4,7 @@ from .models import *
 from .val import *
 from .beam_search import *
 from .config import *
+from .utils import *
+from .train import *
+from .test import *
+from .translate import *
